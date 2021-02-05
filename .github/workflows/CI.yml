@@ -3,10 +3,19 @@ on:
     branches:
       - master
 
-
 name: CI for codecov
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Lint Go Code
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.34.1
   test:
     name: Test
     runs-on: ubuntu-latest
