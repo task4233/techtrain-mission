@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/task4233/techtrain-mission/gameapi/usecase"
@@ -24,14 +23,9 @@ func NewUser(userUC *usecase.User) *User {
 // in: name(string), request body required
 // out: token(string) StatusOK
 func (u *User) Create(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("failed ReadAll: %v", err), http.StatusInternalServerError)
-		return
-	}
 	var req UserCreateRequest
-	if err := json.Unmarshal(body, &req); err != nil {
-		http.Error(w, fmt.Sprintf("failed Unmarshal: %v", err), http.StatusInternalServerError)
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, fmt.Sprintf("failed Decode: %v", err), http.StatusInternalServerError)
 		return
 	}
 	if len(req.Name) == 0 {
@@ -106,13 +100,8 @@ func (u *User) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("failed ReadAll: %v", err), http.StatusInternalServerError)
-		return
-	}
 	var req UserUpdateRequest
-	if err := json.Unmarshal(body, &req); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, fmt.Sprintf("failed Unmarshal: %v", err), http.StatusInternalServerError)
 		return
 	}
